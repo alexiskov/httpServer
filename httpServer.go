@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"path"
 )
 
 type (
@@ -37,7 +38,7 @@ func (srv *server) Run() {
 func (srv *server) handlerMain(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		srv.methodGET()
+		srv.methodGET(r)
 	case http.MethodPost:
 		srv.methodPOST()
 	case http.MethodPut:
@@ -51,7 +52,17 @@ func (srv *server) handlerMain(w http.ResponseWriter, r *http.Request) {
 }
 
 // обработчики методов
-func (srv *server) methodGET()    {}
+func (srv *server) methodGET(r *http.Request) {
+	p := r.URL.Path
+	fmt.Printf("fullpath: %s\n", p)
+	fmt.Printf("path of dir: %s\n", path.Dir(p))
+	fmt.Printf("path last elem: %s\n", path.Base(p))
+}
 func (srv *server) methodPOST()   {}
 func (srv *server) methodPUT()    {}
 func (srv *server) methodDELETE() {}
+
+func NewPipe() *Pipe {
+	logchan := make(chan error)
+	return &Pipe{ErorLog: &logchan}
+}
